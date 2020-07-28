@@ -1,11 +1,12 @@
 /*
- * @Author: your name
- * @Date: 2020-07-10 16:13:19
- * @LastEditTime: 2020-07-10 17:38:31
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \JS-example\常用JS工具方法\字符串方法.js
- */
+ * @Author       : 张涛
+ * @Date         : 2020-07-10 16:13:19
+ * @LastEditTime : 2020-07-20 10:44:11
+ * @Description  : 字符串方法集合
+ * @FilePath     : /常用JS工具方法/字符串方法.js
+ */ 
+
+
 
 void function () {
     /**
@@ -81,7 +82,10 @@ void function () {
     /**
      * @name 字符串有4中方法可以使用正则表达式，replace(),match(),search(),split()
      */
-    
+    console.log('不会打印0');
+
+    return
+    console.log('不会打印');
 }()
 
 

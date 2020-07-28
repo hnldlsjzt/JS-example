@@ -1,8 +1,13 @@
-/*  *@Description: In User Settings Edit * @Author: zhangt  * @Date: 2020-07-01 17:27:40  * @Last Modified by:   zhangt  * @Last Modified time: 2020-07-01 17:27:40  */
-
+/*
+ * @Author: 张涛
+ * @Date: 2020-07-01 17:27:36
+ * @LastEditTime: 2020-07-17 10:45:11
+ * @Description: 
+ * @FilePath: \JS-example\常用JS工具方法\tool.js
+ */ 
 
 /**
- * @name 过滤唯一值
+ * @name 过滤唯一值 
  * @study new Set();返回一个set对象，然后利用扩展运算符变成数组或对象
  * 适用于基础类型
  */
