@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试script属性</title>
+    <!-- <link rel="preload" href="./dynamic.js"> -->
+</head>
+
+<body>
+    <!-- type值不是text/javascript和module时，不会执行 -->
+    <script src="./script.js" type="text/javascript1"></script>
+    <script src="script1.js" type="text/javascript">
+        console.log('在src中使用行内代码');
+    </script>
+
+    <script type="text/javascript">
+        ~ function sayHi() {
+            console.log('<\/script>');
+        }()
+        // 动态创建script，看看它是同步还是异步
+        let script = document.createElement('script');
+        script.src = './dynamic.js'
+        // script.async = false;
+        script.async = false;
+        document.body.appendChild(script);
+        console.log('我是动态添加后引入的log');
+    </script>
+
+</body>
+
+</html>

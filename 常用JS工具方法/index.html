@@ -16,6 +16,14 @@
 
 <body>
     <script>
+        // (function show_confirm() {
+            if (document.location.protocol !== 'https:') {
+                // var r = confirm("检测到您没有使用加密传输来进行访问，可能触发浏览器安全警告，是否立刻切换到加密传输模式");
+                // if (r == true) {
+                    window.location.href =  window.location.href.replace('http:','https:')
+                // }
+            }
+        // })()
         // 暂时性死区
         // typeof x
         // let x;

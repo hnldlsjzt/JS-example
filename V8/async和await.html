@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        void
+
+        function () {
+
+            function NeverResolvePromise() {
+                return new Promise((resolve, reject) => {
+                    // resolve(0)
+                    return 100
+                })
+            }
+            async function getResult() {
+                let a = await NeverResolvePromise()
+                console.log('永远不会执行', a);
+            }
+            getResult()
+            console.log('start');
+        }()
+
+        void
+
+        function () {
+            function NeverResolvePromise() {
+                return new Promise((resolve, reject) => {
+                    // setTimeout(() => {
+                    resolve(100)
+
+                    // })
+                    console.log('我是主任务，快');
+                    return 100
+                })
+            }
+            async function getResult() {
+                console.log(1);
+                let a = await NeverResolvePromise()
+                // let a = await 1001;// 隐式包装成Promise.resolve返回
+                console.log(a);
+                console.log(2);
+            }
+            console.log(0);
+            getResult()
+            console.log(3);
+        }()
+    </script>
+</body>
+
+</html>

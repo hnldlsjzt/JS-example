@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+.second {
+	width: 300px;
+}
+
+.second select {
+	margin: 0;
+
+/* margin-top: 31px; */
+	border: 1px solid #e7e7eb;
+	width: 100%;
+	height: 106px;
+	outline: none;
+}
+
+.second input {
+	display: block;
+	box-sizing: border-box;
+	padding: 6px 60px 6px 6px;
+	border: 1px solid #e7e7eb;
+	border-radius: 0;
+	width: 100%;
+	height: 32px;
+	outline: 0;
+	background: #fff;
+	box-shadow: none;
+	line-height: 1.6;
+	font-size: 14px;
+	color: #333;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+
+	-webkit-box-shadow: none;
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.second ul {
+	position: absolute;
+	left: 8px;
+	top: 27px;
+	border: 1px solid #999;
+	width: 125px;
+	line-height: 16px;
+}
+
+.ul li {
+	list-style: none;
+
+/* left: 15px; */
+	margin-left: -40px;
+	padding-left: 4px;
+	width: 161px;
+	font-family: 微软雅黑;
+}
+
+.blue {
+	background: #1e91ff;
+}
+
+
+
+
+    </style>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+
+</head>
+
+<body>
+    <div class="second">
+        <input type="text" name="makeupCo" id="makeupCo" class="makeinp" onfocus="$(this).setfocus()"
+            oninput="$(this).setinput();" placeholder="请选择或输入" />
+        <select name="makeupCoSe" id="typenum" onchange="$(this).changeF()" size="10" style="display:none;">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="中文试试">中文试试</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="a">a</option>
+        </select>
+    </div>
+    <script>
+        var TempArr = []; //存储option
+        var selectDom = $("#typenum");
+        $(function () {
+            /*先将数据存入数组*/
+            $(selectDom).children('option').each(function (index, el) {
+                TempArr[index] = $(this).text();
+            });
+            $(document).bind('click', function (e) {
+                var e = e || window.event; //浏览器兼容性   
+                var elem = e.target || e.srcElement;
+                while (elem) { //循环判断至跟节点，防止点击的是div子元素   
+                    if (elem.id && (elem.id == 'typenum' || elem.id ==
+                            "makeupCo")) {
+                        return;
+                    }
+                    elem = elem.parentNode;
+                }
+                selectDom.css('display', 'none'); //点击的不是div或其子元素   
+            });
+        });
+
+
+        (function () {
+            $.fn.selectInit = function () {
+
+            }
+
+            $.fn.changeF = function () {
+                $(this).prev("input").val($(this).find("option:selected").text());
+                selectDom.css({
+                    "display": "none"
+                });
+            }
+
+            $.fn.setfocus = function () {
+                selectDom.css({
+                    "display": ""
+                });
+
+            }
+
+            $.fn.setinput = function () {
+                var flag = true;
+                selectDom.html("");
+                console.log(this);
+                var value = this.attr('value');
+                console.log(value,this,this.attr('value'));
+                for (i = 0; i < TempArr.length; i++) {
+                    //若找到以txt的内容开头的，添option
+                    if (TempArr[i].substring(0, value.length).indexOf(value) == 0) {
+                        var option = $("<option></option>").text(TempArr[i]);
+                        selectDom.append(option);
+                        flag = false
+                    }
+                }
+                if (flag) {
+                    var option = $("<option></option>").text('没有相关数据');
+                    selectDom.append(option);
+                }
+            }
+        })($)
+    </script>
+</body>
+
+</html>

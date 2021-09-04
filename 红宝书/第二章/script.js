@@ -1,0 +1,1 @@
+console.log('当type不为text/javascript时');

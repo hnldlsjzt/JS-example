@@ -8,6 +8,10 @@
  * 2.更好的语义（async：异步，await：等待的表达式）
  * 3.更广的适用性：await后面可以跟Promise和原型类型的值（string,number等，不过都会被自动转化为resolve的Promise对象）
  * 4.返回值是Promise
+ * 
+ * 
+ * ps:通常我们直接在async中使用await使用即可
+ * 还可以调用后使用then来接收return的值，如没有手动return，就是undefined
  */
 
 /**
@@ -77,7 +81,7 @@ void function () {
      * 1.返回Promise对象
      */
     // 有return，then的值为返回值
-    // const f = async () => 'hello promise' 
+    const f = async () => 'hello promise'
 
     // 没return,为undefined
     // const f = async () => {
@@ -85,15 +89,18 @@ void function () {
     // }
 
     // 抛错
-    const f = async () => {
-        throw new Error('oh 出错了')
-    }
+    // const f = async () => {
+    //     throw new Error('oh 出错了')
+    // }
+    console.log(f())
     f().then((res) => {
         console.log(res);
     }, e => {
         console.log('捕获error', e);
+    }).catch((e) => {
+        console.log(e);
     })
-}
+}()
 
 void function () {
     console.log('await命令------------------');
@@ -105,6 +112,8 @@ void function () {
     async function foo() {
         // return await '123' // return 123
         // return await true // return true
+        const a = await 123
+        console.log(a);
         return await { a: 1 } // return { a: 1 }
         return await [1, 2, 3] // return [1,2,3]
 
@@ -142,28 +151,28 @@ void function () {
         }
         // 用法
         async function one() {
-            for (let i = 0; i <= 5; i++) {
-                console.log(i);
-                // await sleep(1000)
-                await new Promise(res => {
-                    setTimeout(res(), 1000)// 必需调用res才生效哦
+            for (let i = 0; i < 5; i++) {
+                console.log('sleep before',i);
+                await new Promise((res) => {
+                    setTimeout(res, 1000)
                 })
+                console.log('sleep after');
             }
         }
         one()
         setTimeout(() => {
             console.log('2000');
         }, 2000)
-    }
+    }()
 
     console.log('错误捕获：reject和catch使用-----------');
     async function f() {
         // reject阻断,所有的代码阻止
         // 如果希望reject,后面的也执行，有2中方式：try...catch,在reject后catch
         // await Promise.reject('oh sorry')
-        await Promise.reject('oh sorry').catch(e => {
-            console.log(`catch-e:${e}`);
-        })
+        // await Promise.reject('oh sorry').catch(e => {
+        //     console.log(`catch-e:${e}`);
+        // })
         return await Promise.resolve('ok')// 最后结果手动return
         // await new Promise(res => {
         //     console.log('reject阻断,所有的await停止');
@@ -174,7 +183,7 @@ void function () {
     }).catch(e => {
         console.log(`error:${e}`);
     })
-}
+}()
 
 void function () {
     console.log('使用注意点--------------');
