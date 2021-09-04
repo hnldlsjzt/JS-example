@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var x = 4;
+        var test
+
+        function test_scope() {
+            var name = 'foo'
+            console.log(name); // foo
+            console.log(type); // undefined
+            console.log(test); // undefined
+            var type = 'function'
+            test = 1;
+            console.log(x); // 4 在这打印断点，浏览器的local作用域有3个，
+            /*
+                name : 'foo'
+                type : 'function',
+                this : window
+            */
+        }
+        test_scope()
+
+        // function foo() {
+        //     // 1.变量赋值,没找到就声明一个全局变量x，值为1
+        //     x = 1;
+        //     // 2.使用变量,没找到，error : y is not defined
+        //     // console.log(y)
+        //     // 3.使用未声明的方法，error : z is not defined
+        //     z()
+        // }
+        // foo()
+
+
+        var name = '极客时间'
+        var type = 'global'
+
+        function bar() {
+            var type = 'function'
+
+            function foo() {
+                console.log(type)
+            }
+            foo()
+        }
+        bar()
+    </script>
+</body>
+
+</html>

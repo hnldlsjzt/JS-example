@@ -1,0 +1,36 @@
+<!--
+ * @Author       : 张涛
+ * @Date         : 2020-07-21 17:13:48
+ * @LastEditTime : 2020-07-21 17:14:13
+ * @Description  : 
+ * @FilePath     : /常用JS工具方法/performance.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let p = new Promise(function (resolve, reject) {
+            resolve("成功!");
+        });
+        p.then(function (successMessage) {
+            console.log("p! " + successMessage);
+        });
+    </script>
+    <script>
+        let p1 = new Promise(function (resolve, reject) {
+            resolve("成功!");
+        });
+        p1.then(function (successMessage) {
+            console.log("p1! " + successMessage);
+        });
+    </script>
+</body>
+
+</html>

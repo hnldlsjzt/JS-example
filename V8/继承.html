@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var animal = {
+            type: 'default',
+            color: 'default',
+            getInfo() {
+                return `this:type = ${this.type}、color = ${this.color}`
+            }
+        };
+        var dog = {
+            type: 'dog',
+            color: 'black'
+        };
+        dog.__proto__ = animal; // 把原型对象指向animal，这样就能访问animal上的属性和方法了
+        console.log(dog.getInfo());
+
+        // 使用构造函数来继承
+        function DogFactory(type, color) {
+            this.type = type;
+            this.color = color;
+        }
+        DogFactory.prototype._name = 1
+        var dog1 = new DogFactory('dog', 'white'); // new + 函数会返回一个对象
+        var dog2 = new DogFactory('dog2', 'white'); // new + 函数会返回一个对象
+        var dog3 = new DogFactory('dog3', 'white'); // new + 函数会返回一个对象
+        dog3._name = 2; // 2
+        console.log(dog1._name, dog2._name); // 1 1
+        /*
+        new 做了什么？
+        1.创建一个对象 let dog = {}
+        2.把该对象的__proto__指向DogFactory.prototype; dog.__proto__ = DogFactory.prototype
+        3.把this属性指向新对象
+        4.是否有手动return，return的引用对象，就返回引用对象，不是就返回创建的对象
+        */
+    </script>
+</body>
+
+</html>
