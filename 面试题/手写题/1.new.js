@@ -1,7 +1,7 @@
 /*
  * @Author: hnldlsjzt
  * @Date: 2021-09-06 17:58:42
- * @LastEditTime: 2021-09-06 19:17:39
+ * @LastEditTime: 2021-09-07 11:00:17
  * @LastEditors: hnldlsjzt
  * @Description:
  * @FilePath: \JS-example\面试题\手写题\1.new.js
@@ -74,7 +74,8 @@ void (function () {
     const res = Constructor.apply(obj, arguments);
     console.log("res", res);
     // 4.返回
-    return typeof res === "object" ? res || obj : obj;
+    // return typeof res === "object" ? res || obj : obj;
+    return res instanceof Object ? res : obj;
   }
   // 定义需要的构造函数
   function Otaku(name, age) {
