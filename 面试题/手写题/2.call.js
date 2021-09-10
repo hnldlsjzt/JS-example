@@ -1,7 +1,7 @@
 /*
  * @Author: hnldlsjzt
  * @Date: 2021-09-07 16:38:42
- * @LastEditTime: 2021-09-07 19:50:25
+ * @LastEditTime: 2021-09-09 11:08:47
  * @LastEditors: hnldlsjzt
  * @Description:
  * @FilePath: \JS-example\面试题\手写题\2.call.js
@@ -103,7 +103,7 @@ void (function () {
   Function.prototype.apply1 = function (context) {
     // 1.获取context,为 null 时设置为 window
     context = context || window;
-    // 2.把 this（调用的函数）设置给要执行的对象，方便使用对象打点的方式调用
+    // 2.把 this（调用的函数）设置给要执行的对象，方便使用对象打点的方式调用,核心就是这句，改变this指向
     context.fn = this;
     console.log("this", this);
     // 3.取索引的第一个值且获取返回值,并调用
