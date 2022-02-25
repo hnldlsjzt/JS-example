@@ -1,7 +1,7 @@
 /*
  * @Author: hnldlsjzt
  * @Date: 2021-09-08 19:40:56
- * @LastEditTime: 2021-09-10 17:49:08
+ * @LastEditTime: 2021-09-10 17:55:41
  * @LastEditors: hnldlsjzt
  * @Description:
  * @FilePath: \JS-example\面试题\手写题\3.bind.js
@@ -76,7 +76,7 @@ void (function () {
       ]);
     };
     FNOP.prototype = this.prototype; // 解决new函数时，有修改 prototype 的操作
-    FBound.prototype = new FNOP();
+    // FBound.prototype = new FNOP();
     return FBound;
     // return function () {
     //   const bindFunArgu = [].slice.apply(arguments);
