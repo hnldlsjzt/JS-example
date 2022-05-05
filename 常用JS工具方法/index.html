@@ -1,0 +1,74 @@
+<!--
+ * @Author: 张涛
+ * @Date: 2020-07-09 16:32:48
+ * @LastEditTime : 2020-07-21 17:06:59
+ * @Description: 
+ * @FilePath     : /常用JS工具方法/index.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // (function show_confirm() {
+            if (document.location.protocol !== 'https:') {
+                // var r = confirm("检测到您没有使用加密传输来进行访问，可能触发浏览器安全警告，是否立刻切换到加密传输模式");
+                // if (r == true) {
+                    window.location.href =  window.location.href.replace('http:','https:')
+                // }
+            }
+        // })()
+        // 暂时性死区
+        // typeof x
+        // let x;
+
+        // [
+        //     [1, 2],
+        //     [3, 4]
+        // ].map(([a, b]) => {
+        //     console.log(a, b);
+        //     return a + b
+        // });
+
+        // void
+
+        // function () {
+        //     var a = {}
+        //     var b = {
+        //         key: 'a'
+        //     }
+        //     var c = {
+        //         key: 'c'
+        //     }
+        //     a[b] = '123'
+        //     a[c] = '456'
+        //     console.log(a, a[b]);
+        //     return 
+        //     1
+        //     console.log('1');
+
+        // }()
+        let p = new Promise(function (resolve, reject) {
+            console.log('1');
+            resolve("成功!");
+        });
+        p.then(function (successMessage) {
+            console.log("p! " + successMessage);
+        });
+        let p1 = new Promise(function (resolve, reject) {
+            console.log('2');
+            resolve("成功!");
+        });
+        p1.then(function (successMessage) {
+            console.log("p1! " + successMessage);
+        });
+    </script>
+</body>
+
+</html>

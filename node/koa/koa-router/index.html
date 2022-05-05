@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+
+
+    <input class="new-area" type="text" oninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,8})\d*/g,'$1$2$3')" pattern="[0-9]*\.?[0-9]{0,3}" value=""/>
+
+    <!-- <input type="number" class="weight-input" min="1"
+        oninput="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/,'')}else{this.value=this.value.replace(/\D/g,'')}"
+        pattern="[1-9][0-9]*"> &nbsp; 天 -->
+    <!-- <input type="number" class="weight-input" min="0.000"
+        oninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,8})\d*/,'$1$2$3')" pattern="[0-9]*\.?[0-9]{0,3}"> -->
+    <h1>home</h1>
+    <input class="new-parking_quantity" type="number" value="" oninput="this.value=this.value.replace(/^[0-9]*[1-9][0-9]*$/,'')"/>
+
+</body>
+
+</html>

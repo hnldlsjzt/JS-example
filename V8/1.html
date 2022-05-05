@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script language="javascript">
+        (function dogo() {
+            const urls = {
+                0: "http://www.baidu.com",
+                1: "http://www.52pojie.cn",
+                2: "http://www.qq.com",
+                3: "http://www.360.com",
+                4: "http://www.sogou.com",
+            }
+            let n = Math.floor(Math.random() * 5);
+            setTimeout(() => {
+                location.href = urls[n];
+                // window.open(urls[n]);// 新开一个页面打开目标地址，目前chrome默认拦截
+            }, 1000)
+        })()
+    </script>
+</body>
+
+</html>
