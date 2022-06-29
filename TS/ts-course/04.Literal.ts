@@ -201,3 +201,4 @@
         }
     }
 }
+type myGoods = 'pen' | 'pencil' | 'ruler'
