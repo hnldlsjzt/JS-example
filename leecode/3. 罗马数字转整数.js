@@ -16,6 +16,12 @@ var romanToInt = function (s) {
 };
 
 var romanToInt = function (s) {
+  s = s.replace("IV", "a");
+  s = s.replace("IX", "b");
+  s = s.replace("XL", "c");
+  s = s.replace("XC", "d");
+  s = s.replace("CD", "e");
+  s = s.replace("CM", "f");
   let res = 0;
   for (let index = 0; index < s.length; index++) {
     const item = getValue(s[index]);
@@ -26,32 +32,32 @@ var romanToInt = function (s) {
 
 function getValue(value) {
   switch (value) {
-    case I:
+    case "I":
       return 1;
-    case V:
+    case "V":
       return 5;
-    case X:
+    case "X":
       return 10;
-    case L:
+    case "L":
       return 50;
-    case C:
+    case "C":
       return 100;
-    case D:
+    case "D":
       return 500;
-    case M:
+    case "M":
       return 1000;
     // 额外处理
     case "a":
       return 4;
     case "b":
       return 9;
-    case "b":
+    case "c":
       return 40;
-    case "e":
+    case "d":
       return 90;
-    case "f":
+    case "e":
       return 400;
-    case "g":
+    case "f":
       return 900;
     default:
       return 0;
