@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>css-> :empty</title>
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    .contents{
+      font-size: 15px;
+    }
+    /* 使用伪类 empty */
+    .contents:empty{
+      padding: 20px;
+      border: 1px dashed;
+    }
+    /* 伪类empty 配合伪类before使用 */
+    .contents:empty::before {
+      content: '我是:empty 伪类哦';
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+  <div class="contents">this is content </div>
+  <div class="contents">this is content </div>
+  <!-- 没有内容的元素，作用于empty -->
+  <div class="contents"></div>
+  <div class="contents">this is content </div>
+</body>
+</html>
+

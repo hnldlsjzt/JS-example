@@ -96,6 +96,11 @@ void function () {
             type PickPerson1 = MyPick<Person, 'age'>
             type PickPerson2 = MyPick<Person, 'age' | 'name'>
             type PickPerson3 = MyPick1<Person, 'age'>
+            interface Person1 {
+                true: '1',
+                1: '1'
+            }
+            type PickPerson4 = MyPick1<Person1, "true">
             // 等价于
             // type PickPerson = {
             //     age: number;
@@ -113,9 +118,11 @@ void function () {
             type MyOmit<T, P extends keyof any> = Pick<T, Exclude<keyof T, P>>
             type MyOmit1<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>
             type OmitPerson1 = MyOmit<Person, 'age'>
+            type OmitPerson2 = Omit<Person, 'age1'>
             // 等价于
             // type OmitPerson = {
             // name: string;
+            // }
         }
 
     }
@@ -172,10 +179,11 @@ void function () {
                 name: string;
             }
             type Bool = Human extends Duck ? 'yes' : 'no';
+            type Bool1 = Duck extends Human ? 'yes' : 'no';
             type A1 = 'x' extends 'x' ? string : number; // string
             type A2 = 'x' | 'y' extends 'x' ? string : number; // number,不是泛型，它触发不了条件类型
 
-            type P<T> = T extends 'x' ? string : number;
+            type P<T> = T extends 'x' ? string : number; // 泛型，触发条件判断
             type A3 = P<'x' | 'y'>
         }
         {
@@ -260,6 +268,7 @@ void function () {
                 more: {
                     label: 'home',
                     hidden: false
+                    name: 1// fail
                 }
             }
             // 自定义实现 
