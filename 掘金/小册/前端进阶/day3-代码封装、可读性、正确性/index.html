@@ -160,75 +160,7 @@
           dom.className = className;
         });
       })();
-      void (function () {
-        async function request(URL, params = {}) {
-          const token = document.cookie
-            .split(";")
-            .filter((item) => item.includes("token"))?.[0]
-            .split("=")?.[1];
-          const requestOptions = {
-            headers: {
-              accept: "application/json, text/plain, */*",
-              "accept-language": "zh-CN,zh;q=0.9",
-              "content-type": "application/x-www-form-urlencoded",
-              "sec-ch-ua":
-                '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
-              "sec-ch-ua-mobile": "?0",
-              "sec-ch-ua-platform": '"macOS"',
-              "sec-fetch-dest": "empty",
-              "sec-fetch-mode": "cors",
-              "sec-fetch-site": "same-site",
-              "x-token": token,
-            },
-            referrer: "https://app-center-frontend-test.mysre.cn/",
-            referrerPolicy: "strict-origin-when-cross-origin",
-            body: params,
-            method: "POST",
-            mode: "cors",
-            credentials: "omit",
-          };
-          const data = await fetch(URL, requestOptions).then((res) =>
-            res.json()
-          );
-          return data;
-        }
-
-
-        async function getLog(id) {
-          const { errcode, data } = await request(
-            `https://app-center-test.mysre.cn/web-version/get-image-build-log?id=${id}`
-          ).then((res) => res.json());
-
-          if (errcode === 0 && (data?.status === "构建成功" || data?.status !== '构建中')) {
-            return true;
-          }
-          return false;
-        }
-
-        async function loopFecth(id, callback) {
-          setTimeout(() => {
-           const res =  await callback(id)
-           if(!res){
-             loopFecth.bind(id,callback);
-           }else{
-            console.log('构建完成');
-           }
-          }, 5000);
-        }
-
-        const addImage =
-          "https://app-center-test.mysre.cn/web-version/add-image";
-        const { errcode, errmsg, data } = request(addImage);
-        if (errcode === 0) {
-          console.log("构建成功~", data?.id);
-          const status = getLog(data?.id);
-           if(!status){
-            loopFecth(id,getLog)
-           }
-        } else {
-          console.error("构建失败：", errmsg);
-        }
-      })();
+     
     </script>
   </body>
 </html>
