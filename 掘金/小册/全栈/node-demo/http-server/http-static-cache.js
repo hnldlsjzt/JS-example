@@ -42,12 +42,13 @@ const server = http.createServer((req, res) => {
         //     res.writeHead(200, { "Content-Type": `${mime.getType(file.ext)}` })
         //     res.end(content)
         // }
-        // 重新检测拼接后的路径 -- 采用流的方式
+        // !isDir 是文件
+        // fs.existsSync(filepath) 重新检测拼接后的路径是否存在 -- 采用流的方式 
         if (!isDir || fs.existsSync(filepath)) {
             const timeStamp = req.headers['if-modified-since']
             // 获取这个路径文件的信息
             const file = path.parse(filepath)
-            console.log('file: ', file);
+            console.log('file: ', file, filepath);
             let status = 200;
             // 时间一致，就返回 304，不会返回 body
             // mtimeMs 表示修改时间
@@ -74,6 +75,6 @@ server.on('clientError', (err, scoket) => {
 
 })
 
-server.listen(9999, () => {
+server.listen(9991, () => {
     console.log('open', server.address);
 })
