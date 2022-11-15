@@ -1,0 +1,63 @@
+/**
+ * 更新日期：2019年07月23日
+ * author：bigOrange
+ */
+.wkSelectBox .hide {
+	display: none;
+}.wkSelectBox {
+	display: inline-block;;
+	position: relative;
+}.wkSelectBox .wkSelectInput {
+	padding: 0 6px;;
+	height: 34px;
+	line-height: 34px;
+	font-size: 14px;
+}.wkSelectBox .wkSelectList {
+	overflow-y: auto;
+	position: absolute;
+	top: 34px;
+	z-index: 99;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 5px 0;
+	border: 1px solid #ddd;
+	border-top: 0;
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	width: 100px;
+	max-height: 180px;
+	background: #fff;
+	box-shadow: 4px 4px 5px 0 rgba(0,0,0,.07);
+	font-size: 14px;;
+
+	-webkit-box-shadow: 4px 4px 5px 0 rgba(0,0,0,.07);
+	-moz-box-shadow: 4px 4px 5px 0 rgba(0,0,0,.07);
+}.wkSelectList li {
+	padding: 5px 10px;
+	cursor: pointer;
+	line-height: 1.3;
+}.wkSelectList li.wkEmpty {
+	cursor: initial;;
+	color: #999;
+}.wkSelectBox .wkSelectLabel {
+	position: absolute;
+	left: 5px;;
+	top: 6px;
+}.wkSelectBox .wkSelectLabelBg {
+	box-sizing: border-box;
+	padding: 0 8px;
+	border-radius: 12px;
+	height: 24px;
+	background: #f5a623;
+	line-height: 24px;
+	font-size: 14px;;
+	color: #fff;
+}.wkSelectBox .wkSelectLabelClose {
+	padding-left: 5px;
+	cursor: pointer;
+	vertical-align: top;
+}.wkSelectBox .text-nowrap {
+	overflow: hidden;;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}

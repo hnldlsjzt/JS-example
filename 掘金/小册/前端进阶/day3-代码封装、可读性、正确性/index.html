@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>day3-代码封装、可读性、正确性</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .traffic {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+      }
+      .traffic .light {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #999;
+        margin-bottom: 10px;
+      }
+      .traffic.pass .light:nth-child(1) {
+        background-color: #0a6; /*绿灯*/
+      }
+      .traffic.wait .light:nth-child(2) {
+        background-color: #cc0; /*黄灯*/
+      }
+      .traffic.stop .light:nth-child(3) {
+        background-color: #c00; /*红灯*/
+      }
+    </style>
+  </head>
+  <body>
+    <header>模拟交通灯</header>
+    <main>
+      <div class="traffic pass">
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+      </div>
+    </main>
+    <script>
+      // 模拟交通灯信号，分别以5秒、1.5秒、3.5秒来循环切换绿灯（pass状态）、黄灯（wait状态）和红灯（stop状态）。
+      // 也就是，默认是绿灯，过5秒后显示黄灯，过1.5秒后显示红灯，再过3.5秒后又回到绿灯，然后以这样的方式继续循环下
+
+      /**
+       * 初级版本
+       * 缺点：代码难以维护和阅读，缺少封装性
+       * 同时，loop 函数依赖了外部的变量，不好复用。复制到别的地方，如果没有这个元素呢
+       * 函数内有个不明来源的变量，函数的封装性被完全破坏
+       * 且数据都是写死在函数中。
+       */
+
+      void function () {
+        const traffic = document.querySelector(".traffic");
+        function loop() {
+          traffic.className = "traffic pass";
+          setTimeout(() => {
+            traffic.className = "traffic wait";
+            setTimeout(() => {
+              traffic.className = "traffic stop";
+              setTimeout(loop, 3000);
+            }, 1500);
+          }, 5000);
+        }
+        loop();
+      };
+
+      // 中级版本
+      /*
+       * 把数据抽象出来，结构化。通过参数传递进去
+       */
+      void function () {
+        const traffic = document.querySelector(".traffic");
+        function loop(dom, singles = []) {
+          const singleLength = singles.length;
+          function updateSingle(i) {
+            const { signal, duration } = singles[i % singleLength]; // 让索引一直保持在数组长度内
+            dom.className = signal; // 这里还有个副作用，需要把它剥离出去
+            setTimeout(updateSingle.bind(null, i + 1), duration);
+          }
+          updateSingle(0);
+        }
+
+        const signals = [
+          { signal: "traffic pass", duration: 5000 },
+          { signal: "traffic wait", duration: 3500 },
+          { signal: "traffic stop", duration: 1500 },
+        ];
+
+        loop(traffic, signals);
+      };
+      // 中级-无副作用
+      void function () {
+        const traffic = document.querySelector(".traffic");
+        function loop(dom, singles = [], callback) {
+          const singleLength = singles.length;
+          function updateSingle(i) {
+            const { signal, duration } = singles[i % singleLength]; // 让索引一直保持在数组长度内
+            callback?.(dom, signal); // 执行要做的事情
+            setTimeout(updateSingle.bind(null, i + 1), duration);
+          }
+          updateSingle(0);
+        }
+
+        const signals = [
+          { signal: "traffic pass", duration: 5000 },
+          { signal: "traffic wait", duration: 3500 },
+          { signal: "traffic stop", duration: 1500 },
+        ];
+
+        loop(traffic, signals, (dom, signal) => {
+          dom.className = signal;
+        });
+      };
+
+      // 同步版本 - 提高可读性
+      // 代码是人阅读的，只是偶尔让计算机执行一下。
+
+      void (function () {
+        const traffic = document.querySelector(".traffic");
+
+        function wait(ms) {
+          return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        async function loop(dom, singles = [], callback) {
+          const length = singles.length; // 用于取余，获取索引值
+          // for (let i = 0; ; i++) {
+          //   const { className, duration } = signals[i % length];
+          //   await callback(dom, className); // 回调做额外的事情
+          //   await wait(duration);
+          // }
+          let i = 0;
+          while (1) {
+            const { className, duration } = signals[i % length];
+            await callback(dom, className); // 回调做额外的事情
+            await wait(duration);
+            i++;
+          }
+        }
+
+        const signals = [
+          { className: "traffic pass", duration: 5000 },
+          { className: "traffic wait", duration: 3500 },
+          { className: "traffic stop", duration: 1500 },
+        ];
+
+        loop(traffic, signals, (dom, className) => {
+          dom.className = className;
+        });
+      })();
+     
+    </script>
+  </body>
+</html>
