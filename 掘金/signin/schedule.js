@@ -1,10 +1,11 @@
 const schedule = require('node-schedule');
 
-const  scheduleCronstyle = ()=>{
+const scheduleCronstyle = (callback, time = '* 10 * * * *') => {
   //每分钟的第30秒定时执行一次:
-    schedule.scheduleJob('10 * * * * *',()=>{
-        console.log('scheduleCronstyle:' + new Date());
-    }); 
+  schedule.scheduleJob(time, (fireDate) => {
+    callback?.()
+    console.log('fireDate:' + fireDate, 'scheduleCronstyle:' + new Date());
+  });
 }
-//执行定时器
-scheduleCronstyle();
+
+module.exports = scheduleCronstyle
