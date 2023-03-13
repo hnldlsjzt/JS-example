@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div
+      id="conentWrapper"
+      class="ml-24 mr-24 pb-30x relative z-10 bg-gray-f2f3f5 flex justify-center xl:block 3xl:flex"
+    >
+      <div
+        class="max-w-860x m-auto pl-0 pr-0 lg:pl-20x lg:pr-20x pt-80x mt-30 bg-white rounded-6 relative w-full"
+        style="box-shadow: 1px 1px 8px rgb(0 0 0 / 15%)"
+      >
+        <div
+          class="absolute top-0 left-50 transform -translate-y-1/2 flex mt-10x"
+        >
+          <div
+            class="flex items-center justify-center overflow-hidden relative"
+            style="width: 60px; height: 60px; border-radius: 6px"
+          >
+            <img
+              class="absolute block box-border"
+              style="width: 60px; height: 84.2576px"
+              src="https://img.qingp.net/c617de13771bff7ca1b7c864524be0c9"
+              data-original="https://img.qingp.net/c617de13771bff7ca1b7c864524be0c9"
+            />
+          </div>
+          <a
+            class="text-14x text-gray-666 ml-20x mt-30x hover:text-blue-primary hover:underline cursor-pointer"
+            href="/book/632b39bf43fa7329da439e93.html"
+            >前端调试通关秘籍</a
+          >
+        </div>
+        <div class="pl-30 pr-30 mb-20x pt-10x">
+          <h4 class="text-26x font-bold">基于 CDP 实现 Puppeteer（上）</h4>
+          <div class="text-14x mt-12 flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="mr-20">
+                发布于<!-- -->
+                <!-- -->2022-12-08
+              </div>
+            </div>
+            <div class="flex items-center"></div>
+          </div>
+        </div>
+        <div class="absolute top-0 right-50 cursor-pointer">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="block w-32x h-32x"
+            viewBox="0 0 1024 1024"
+          >
+            <path
+              d="M810.667 533.333V960a21.333 21.333 0 01-32.147 18.387L426.667 771.42 74.813 978.387A21.333 21.333 0 0142.667 960V96A53.393 53.393 0 0196 42.667h661.333A53.393 53.393 0 01810.667 96v224A21.333 21.333 0 01768 320V96a10.667 10.667 0 00-10.667-10.667H96A10.667 10.667 0 0085.333 96v826.7l330.52-194.42a21.333 21.333 0 0121.627 0L768 922.7V533.333a21.333 21.333 0 0142.667 0zM960 384H618.667a21.333 21.333 0 000 42.667H960A21.333 21.333 0 00960 384z"
+            ></path>
+          </svg>
+        </div>
+        <article id="slateWrapper">
+          <div
+            class="text-14x overflow-x-auto pl-14 pr-14 lg;pl-30 lg:pr-30 break-words m-10"
+          >
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              Puppeteer 是一个网页的自动化测试工具，它支持写一些 JS
+              脚本来控制浏览器执行一些行为，可以用来跑测试用例，或者用来做爬虫。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              它的脚本类似这样：
+            </p>
+            <div class="code-toolbar">
+              <pre
+                style="
+                  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+                  font-size: 16px;
+                  position: relative;
+                  overflow: auto;
+                  line-height: 1.75;
+                  color: #333333;
+                  background: #f8f8f8;
+                "
+                class="language-javascript"
+                tabindex="0"
+              ><code class="hljs language-javascript" lang="javascript" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; border-radius: 2px; overflow-x: auto; background-position: initial; background-color: #f8f8f8; color: #333333; padding: 15px 12px; margin: 0px; display: block;"><span class="token keyword keyword-const">const</span> puppeteer <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'puppeteer'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'fs/promises'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">(</span><span class="token keyword keyword-async">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword keyword-const">const</span> browser <span class="token operator">=</span> <span class="token keyword keyword-await">await</span> puppeteer<span class="token punctuation">.</span><span class="token function">launch</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token literal-property property">headless</span><span class="token operator">:</span> <span class="token boolean">false</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword keyword-const">const</span> page <span class="token operator">=</span> <span class="token keyword keyword-await">await</span> browser<span class="token punctuation">.</span><span class="token function">newPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword keyword-await">await</span> page<span class="token punctuation">.</span><span class="token function">goto</span><span class="token punctuation">(</span><span class="token string">'https://baidu.com'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword keyword-const">const</span> $input <span class="token operator">=</span> <span class="token keyword keyword-await">await</span> page<span class="token punctuation">.</span><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#kw'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword keyword-await">await</span> $input<span class="token punctuation">.</span><span class="token function">type</span><span class="token punctuation">(</span><span class="token string">'guangguangguang'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword keyword-const">const</span> $button <span class="token operator">=</span> <span class="token keyword keyword-await">await</span> page<span class="token punctuation">.</span><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#su'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword keyword-await">await</span> $button<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword keyword-await">await</span> page<span class="token punctuation">.</span><span class="token function">waitForSelector</span><span class="token punctuation">(</span><span class="token string">'#container'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword keyword-const">const</span> screenshot <span class="token operator">=</span> <span class="token keyword keyword-await">await</span> page<span class="token punctuation">.</span><span class="token function">screenshot</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword keyword-await">await</span> fs<span class="token punctuation">.</span><span class="token function">writeFile</span><span class="token punctuation">(</span><span class="token string">'./screenshot.png'</span><span class="token punctuation">,</span> screenshot<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword keyword-await">await</span> browser<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+              <div class="toolbar"></div>
+            </div>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              我们 launch 了一个浏览器，打开一个标签页，访问
+              baidu，在输入框输入一些内容，然后点击搜索按钮，等页面出现结果就截下图存到本地文件，然后关闭浏览器。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              跑起来是这样的：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <img
+                class="medium-zoom-image"
+                style="
+                  border-style: none;
+                  cursor: zoom-in;
+                  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) 0s !important;
+                  z-index: 10000;
+                  max-width: 100%;
+                  margin: 0px;
+                "
+                src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6cd29bc4c9bf445298b2395ca2ae847c~tplv-k3u1fbpfcp-zoom-in-crop-mark:3326:0:0:0.awebp"
+                alt=""
+                loading="lazy"
+              />
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              其实跑这种脚本不需要看到界面，所以 puppeteer 默认是 headless
+              的，也就是无界面的。（上面是我把 headless 给关掉了）
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              这种脚本写起来还是很简单的，就是按照你操作的步骤一步步写对应的脚本就好了，甚至还有录制你的行为来生成
+              puppeteer 脚本的工具。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              今天我们不讲它的应用，而是来探究下它的实现原理。我们能不能自己实现一个呢？
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <span style="font-weight: bold"
+                >puppeteer 是基于 Chrome DevTools Protocol
+                实现的，会以调试模式跑一个 chromium 的实例，然后通过 WebSocket
+                连接上它，之后通过 CDP 协议来远程控制。</span
+              >
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <span style="font-weight: bold"
+                >我们写的脚本最终都会转成 CDP 协议来发送给 Chrome
+                浏览器，这就是它的实现原理。</span
+              >
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              接下来我们尝试自己实现一个简易版 puppeteer 来深入理解它。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              要想控制 Chromium，总得先把他下下来吧，所以这一节我们来实现
+              Chromium 的自动下载（<span style="font-weight: bold"
+                >这节不涉及 CDP，大家简单看下就行，重点在下一节</span
+              >）。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              google 有个网站存储了所有版本、所有平台的 chromium，它的 url
+              是这样的：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              mac 的 url：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <a
+                style="
+                  background-color: transparent;
+                  margin: initial;
+                  text-decoration-line: none;
+                  cursor: pointer;
+                  color: #0269c8;
+                  border-bottom: 1px solid #d1e9ff;
+                "
+                title="https://storage.googleapis.com/chromium-browser-snapshots/Mac/%E7%89%88%E6%9C%AC%E5%8F%B7/chrome-mac.zip"
+                href="https://link.juejin.cn/?target=https%3A%2F%2Fstorage.googleapis.com%2Fchromium-browser-snapshots%2FMac%2F%25E7%2589%2588%25E6%259C%25AC%25E5%258F%25B7%2Fchrome-mac.zip"
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                >storage.googleapis.com/chromium-br…</a
+              >
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              linux 的 url：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <a
+                style="
+                  background-color: transparent;
+                  margin: initial;
+                  text-decoration-line: none;
+                  cursor: pointer;
+                  color: #0269c8;
+                  border-bottom: 1px solid #d1e9ff;
+                "
+                title="https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%E7%89%88%E6%9C%AC%E5%8F%B7/chrome-linux.zip"
+                href="https://link.juejin.cn/?target=https%3A%2F%2Fstorage.googleapis.com%2Fchromium-browser-snapshots%2FLinux_x64%2F%25E7%2589%2588%25E6%259C%25AC%25E5%258F%25B7%2Fchrome-linux.zip"
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                >storage.googleapis.com/chromium-br…</a
+              >
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              win32 的 url：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <a
+                style="
+                  background-color: transparent;
+                  margin: initial;
+                  text-decoration-line: none;
+                  cursor: pointer;
+                  color: #0269c8;
+                  border-bottom: 1px solid #d1e9ff;
+                "
+                title="https://storage.googleapis.com/chromium-browser-snapshots/Win/%E7%89%88%E6%9C%AC%E5%8F%B7/chrome-win32.zip"
+                href="https://link.juejin.cn/?target=https%3A%2F%2Fstorage.googleapis.com%2Fchromium-browser-snapshots%2FWin%2F%25E7%2589%2588%25E6%259C%25AC%25E5%258F%25B7%2Fchrome-win32.zip"
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                >storage.googleapis.com/chromium-br…</a
+              >
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              win64 的 url：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <a
+                style="
+                  background-color: transparent;
+                  margin: initial;
+                  text-decoration-line: none;
+                  cursor: pointer;
+                  color: #0269c8;
+                  border-bottom: 1px solid #d1e9ff;
+                "
+                title="https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/%E7%89%88%E6%9C%AC%E5%8F%B7/chrome-win32.zip"
+                href="https://link.juejin.cn/?target=https%3A%2F%2Fstorage.googleapis.com%2Fchromium-browser-snapshots%2FWin_x64%2F%25E7%2589%2588%25E6%259C%25AC%25E5%258F%25B7%2Fchrome-win32.zip"
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                >storage.googleapis.com/chromium-br…</a
+              >
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              你可以把 url 换成具体的版本号试试，比如 468266、546920
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <img
+                class="medium-zoom-image"
+                style="
+                  border-style: none;
+                  cursor: zoom-in;
+                  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) 0s !important;
+                  z-index: 10000;
+                  max-width: 100%;
+                  margin: 0px;
+                "
+                src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c05ff1e9f0574a4b8e6d5443eb6e6493~tplv-k3u1fbpfcp-zoom-in-crop-mark:3326:0:0:0.awebp"
+                alt=""
+                loading="lazy"
+              />
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              所有的版本号可以在国内的一个镜像网站看到：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <a
+                style="
+                  background-color: transparent;
+                  margin: initial;
+                  text-decoration-line: none;
+                  cursor: pointer;
+                  color: #0269c8;
+                  border-bottom: 1px solid #d1e9ff;
+                "
+                title="https://registry.npmmirror.com/binary.html?path=chromium-browser-snapshots/"
+                href="https://link.juejin.cn/?target=https%3A%2F%2Fregistry.npmmirror.com%2Fbinary.html%3Fpath%3Dchromium-browser-snapshots%2F"
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                >registry.npmmirror.com/binary.html…</a
+              >
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <img
+                class="medium-zoom-image"
+                style="
+                  border-style: none;
+                  cursor: zoom-in;
+                  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) 0s !important;
+                  z-index: 10000;
+                  max-width: 100%;
+                  margin: 0px;
+                "
+                src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/15f81efbeb7942119eb9a7d38265bf29~tplv-k3u1fbpfcp-zoom-in-crop-mark:3326:0:0:0.awebp"
+                alt=""
+                loading="lazy"
+              />
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              把下载下来的 zip 包解压，这个不就是我们要的 chromium 浏览器么？
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <img
+                class="medium-zoom-image"
+                style="
+                  border-style: none;
+                  cursor: zoom-in;
+                  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) 0s !important;
+                  z-index: 10000;
+                  max-width: 100%;
+                  margin: 0px;
+                "
+                src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b6a5104754f949fdb3982e0e66b84678~tplv-k3u1fbpfcp-zoom-in-crop-mark:3326:0:0:0.awebp"
+                alt=""
+                loading="lazy"
+              />
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              流程是这么个流程，但我们肯定不能手动搞，要做成自动化的。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              因为安装 puppeteer 之后是要下载这个 chromium
+              的，不能让开发者手动去下吧。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              所以接下来我们就把这个流程给自动化了。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              我们一步步来，首先是下载 chromium 到本地的一个目录：
+            </p>
+            <div class="code-toolbar">
+              <pre
+                style="
+                  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+                  font-size: 16px;
+                  position: relative;
+                  overflow: auto;
+                  line-height: 1.75;
+                  color: #333333;
+                  background: #f8f8f8;
+                "
+                class="language-javascript"
+                tabindex="0"
+              ><code class="hljs language-javascript" lang="javascript" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; border-radius: 2px; overflow-x: auto; background-position: initial; background-color: #f8f8f8; color: #333333; padding: 15px 12px; margin: 0px; display: block;"><span class="token keyword keyword-const">const</span> os <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'os'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> path <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> extract <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'extract-zip'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> util <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'util'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword keyword-const">const</span> <span class="token constant">CHROMIUM_PATH</span> <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'..'</span><span class="token punctuation">,</span> <span class="token string">'.local-chromium'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword keyword-const">const</span> downloadURLs <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">linux</span><span class="token operator">:</span> <span class="token string">'https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%d/chrome-linux.zip'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">darwin</span><span class="token operator">:</span> <span class="token string">'https://storage.googleapis.com/chromium-browser-snapshots/Mac/%d/chrome-mac.zip'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">win32</span><span class="token operator">:</span> <span class="token string">'https://storage.googleapis.com/chromium-browser-snapshots/Win/%d/chrome-win32.zip'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">win64</span><span class="token operator">:</span> <span class="token string">'https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/%d/chrome-win32.zip'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword keyword-async">async</span> <span class="token keyword keyword-function">function</span> <span class="token function">downloadChromium</span><span class="token punctuation">(</span><span class="token parameter">revision<span class="token punctuation">,</span> progressCallback</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword keyword-let">let</span> url <span class="token operator">=</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">;</span>
+
+    <span class="token keyword keyword-const">const</span> platform <span class="token operator">=</span> os<span class="token punctuation">.</span><span class="token function">platform</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword keyword-if">if</span> <span class="token punctuation">(</span>platform <span class="token operator">===</span> <span class="token string">'darwin'</span><span class="token punctuation">)</span>
+        url <span class="token operator">=</span> downloadURLs<span class="token punctuation">.</span>darwin<span class="token punctuation">;</span>
+    <span class="token keyword keyword-else">else</span> <span class="token keyword keyword-if">if</span> <span class="token punctuation">(</span>platform <span class="token operator">===</span> <span class="token string">'linux'</span><span class="token punctuation">)</span>
+        url <span class="token operator">=</span> downloadURLs<span class="token punctuation">.</span>linux<span class="token punctuation">;</span>
+    <span class="token keyword keyword-else">else</span> <span class="token keyword keyword-if">if</span> <span class="token punctuation">(</span>platform <span class="token operator">===</span> <span class="token string">'win32'</span><span class="token punctuation">)</span>
+        url <span class="token operator">=</span> os<span class="token punctuation">.</span><span class="token function">arch</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token string">'x64'</span> <span class="token operator">?</span> downloadURLs<span class="token punctuation">.</span>win64 <span class="token operator">:</span> downloadURLs<span class="token punctuation">.</span>win32<span class="token punctuation">;</span>
+
+    console<span class="token punctuation">.</span><span class="token function">assert</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Unsupported platform: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>platform<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    url <span class="token operator">=</span> util<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> revision<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+<span class="token punctuation">}</span>
+</code></pre>
+              <div class="toolbar"></div>
+            </div>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              首先，下载到的本地目录是
+              .local-chromium，我们根据输入的版本号，以及从 os.platform()
+              拿到的系统信息来确定下载的 url。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              有两个 node 的 api 要解释下：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              console.assert 就是第一个参数的值为 false
+              的时候，才输出第二个参数的信息：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <img
+                class="medium-zoom-image"
+                style="
+                  border-style: none;
+                  cursor: zoom-in;
+                  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) 0s !important;
+                  z-index: 10000;
+                  max-width: 100%;
+                  margin: 0px;
+                "
+                src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ed3a9225a7b4403ebae298b653cf8b0a~tplv-k3u1fbpfcp-zoom-in-crop-mark:3326:0:0:0.awebp"
+                alt=""
+                loading="lazy"
+              />
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              util.format 是格式化字符串用的，有一些占位符，%d 是数字、%s
+              是字符串、%j 是 JSON 等：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <img
+                class="medium-zoom-image"
+                style="
+                  border-style: none;
+                  cursor: zoom-in;
+                  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) 0s !important;
+                  z-index: 10000;
+                  max-width: 100%;
+                  margin: 0px;
+                "
+                src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3c10c3cb5c644eaa838726be0966ba24~tplv-k3u1fbpfcp-zoom-in-crop-mark:3326:0:0:0.awebp"
+                alt=""
+                loading="lazy"
+              />
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              到了这里，就拿到了下载 chromium 的 url。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              那么接下来就是用 https 访问这个 url，下载到本地的目录了。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              我们接下来实现下载到本地的功能：
+            </p>
+            <div class="code-toolbar">
+              <pre
+                style="
+                  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+                  font-size: 16px;
+                  position: relative;
+                  overflow: auto;
+                  line-height: 1.75;
+                  color: #333333;
+                  background: #f8f8f8;
+                "
+                class="language-javascript"
+                tabindex="0"
+              ><code class="hljs language-javascript" lang="javascript" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; border-radius: 2px; overflow-x: auto; background-position: initial; background-color: #f8f8f8; color: #333333; padding: 15px 12px; margin: 0px; display: block;"><span class="token keyword keyword-const">const</span> https <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'https'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword keyword-function">function</span> <span class="token function">downloadFile</span><span class="token punctuation">(</span><span class="token parameter">url<span class="token punctuation">,</span> destinationPath<span class="token punctuation">,</span> progressCallback</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword keyword-let">let</span> resolve <span class="token punctuation">,</span> reject<span class="token punctuation">;</span>
+    <span class="token keyword keyword-const">const</span> promise <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">x<span class="token punctuation">,</span> y</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span> resolve <span class="token operator">=</span> x<span class="token punctuation">;</span> reject <span class="token operator">=</span> y<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword keyword-const">const</span> request <span class="token operator">=</span> https<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> <span class="token parameter">response</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword keyword-if">if</span> <span class="token punctuation">(</span>response<span class="token punctuation">.</span>statusCode <span class="token operator">!==</span> <span class="token number">200</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword keyword-const">const</span> error <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Download failed: server returned code </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>response<span class="token punctuation">.</span>statusCode<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">. URL: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>url<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            response<span class="token punctuation">.</span><span class="token function">resume</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">reject</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword keyword-return">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword keyword-const">const</span> file <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">createWriteStream</span><span class="token punctuation">(</span>destinationPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        file<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'finish'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">resolve</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        file<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'error'</span><span class="token punctuation">,</span> <span class="token parameter">error</span> <span class="token operator">=&gt;</span> <span class="token function">reject</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        response<span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    request<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'error'</span><span class="token punctuation">,</span> <span class="token parameter">error</span> <span class="token operator">=&gt;</span> <span class="token function">reject</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword keyword-return">return</span> promise<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+              <div class="toolbar"></div>
+            </div>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              因为这个下载过程是异步的，我们希望返回一个 promise。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              很多人写返回 promsie 的方法都是这么写：
+            </p>
+            <div class="code-toolbar">
+              <pre
+                style="
+                  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+                  font-size: 16px;
+                  position: relative;
+                  overflow: auto;
+                  line-height: 1.75;
+                  color: #333333;
+                  background: #f8f8f8;
+                "
+                class="language-javascript"
+                tabindex="0"
+              ><code class="hljs language-javascript" lang="javascript" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; border-radius: 2px; overflow-x: auto; background-position: initial; background-color: #f8f8f8; color: #333333; padding: 15px 12px; margin: 0px; display: block;"><span class="token keyword keyword-function">function</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword keyword-return">return</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// resolve();</span>
+
+        <span class="token comment">// reject()</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+              <div class="toolbar"></div>
+            </div>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              其实也可以这么写：
+            </p>
+            <div class="code-toolbar">
+              <pre
+                style="
+                  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+                  font-size: 16px;
+                  position: relative;
+                  overflow: auto;
+                  line-height: 1.75;
+                  color: #333333;
+                  background: #f8f8f8;
+                "
+                class="language-javascript"
+                tabindex="0"
+              ><code class="hljs language-javascript" lang="javascript" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; border-radius: 2px; overflow-x: auto; background-position: initial; background-color: #f8f8f8; color: #333333; padding: 15px 12px; margin: 0px; display: block;"><span class="token keyword keyword-function">function</span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword keyword-let">let</span> resolve <span class="token punctuation">,</span> reject<span class="token punctuation">;</span>
+    <span class="token keyword keyword-const">const</span> promise <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">x<span class="token punctuation">,</span> y</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span> resolve <span class="token operator">=</span> x<span class="token punctuation">;</span> reject <span class="token operator">=</span> y<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// resolve();</span>
+    <span class="token comment">// reject();</span>
+
+    <span class="token keyword keyword-return">return</span> promise<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+              <div class="toolbar"></div>
+            </div>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              中间的部分就是用 https.get 下载 url 的数据了，不过这个回调函数的
+              response 参数是一个流。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              为什么呢？
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              因为如果数据很多，需要等好久才能传完，那要等全部传完再处理么？
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              不用，可以每传一部分就处理一部分。这就是流的思想。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              基本所有语言处理网络和文件 IO 的 api 都是基于流的。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              我们创建了一个写入流，写入到本地的文件的，然后把响应流 pipe
+              到文件流，也就是直接写入到文件里了：
+            </p>
+            <div class="code-toolbar">
+              <pre
+                style="
+                  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+                  font-size: 16px;
+                  position: relative;
+                  overflow: auto;
+                  line-height: 1.75;
+                  color: #333333;
+                  background: #f8f8f8;
+                "
+                class="language-javascript"
+                tabindex="0"
+              ><code class="hljs language-javascript" lang="javascript" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; border-radius: 2px; overflow-x: auto; background-position: initial; background-color: #f8f8f8; color: #333333; padding: 15px 12px; margin: 0px; display: block;"><span class="token keyword keyword-const">const</span> file <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">createWriteStream</span><span class="token punctuation">(</span>destinationPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+file<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'finish'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">resolve</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+file<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'error'</span><span class="token punctuation">,</span> <span class="token parameter">error</span> <span class="token operator">=&gt;</span> <span class="token function">reject</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+response<span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+              <div class="toolbar"></div>
+            </div>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              失败的时候，流中的数据就不需要了，所以要调用 response.resume()
+              来消费掉。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              这样就实现了下载功能。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <img
+                class="medium-zoom-image"
+                style="
+                  border-style: none;
+                  cursor: zoom-in;
+                  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) 0s !important;
+                  z-index: 10000;
+                  max-width: 100%;
+                  margin: 0px;
+                "
+                src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b2f64c16fe864412853fb6388bb26034~tplv-k3u1fbpfcp-zoom-in-crop-mark:3326:0:0:0.awebp"
+                alt=""
+                loading="lazy"
+              />
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              接下来实现第二步，解压缩：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              这个自己处理就比较麻烦了，直接用第三方的包就行，比如 extract-zip：
+            </p>
+            <div class="code-toolbar">
+              <pre
+                style="
+                  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+                  font-size: 16px;
+                  position: relative;
+                  overflow: auto;
+                  line-height: 1.75;
+                  color: #333333;
+                  background: #f8f8f8;
+                "
+                class="language-javascript"
+                tabindex="0"
+              ><code class="hljs language-javascript" lang="javascript" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; border-radius: 2px; overflow-x: auto; background-position: initial; background-color: #f8f8f8; color: #333333; padding: 15px 12px; margin: 0px; display: block;"><span class="token keyword keyword-const">const</span> extract <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'extract-zip'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword keyword-function">function</span> <span class="token function">extractZip</span><span class="token punctuation">(</span><span class="token parameter">zipPath<span class="token punctuation">,</span> folderPath</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword keyword-return">return</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token parameter">resolve</span>  <span class="token operator">=&gt;</span> <span class="token function">extract</span><span class="token punctuation">(</span>zipPath<span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token literal-property property">dir</span><span class="token operator">:</span> folderPath<span class="token punctuation">}</span><span class="token punctuation">,</span> resolve <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+              <div class="toolbar"></div>
+            </div>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              在处理完下载的 url 之后，调用下这两步：
+            </p>
+            <div class="code-toolbar">
+              <pre
+                style="
+                  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+                  font-size: 16px;
+                  position: relative;
+                  overflow: auto;
+                  line-height: 1.75;
+                  color: #333333;
+                  background: #f8f8f8;
+                "
+                class="language-javascript"
+                tabindex="0"
+              ><code class="hljs language-javascript" lang="javascript" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; border-radius: 2px; overflow-x: auto; background-position: initial; background-color: #f8f8f8; color: #333333; padding: 15px 12px; margin: 0px; display: block;"><span class="token keyword keyword-const">const</span> zipPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token constant">CHROMIUM_PATH</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">download-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>revision<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.zip</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> folderPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token constant">CHROMIUM_PATH</span><span class="token punctuation">,</span> revision<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword keyword-if">if</span> <span class="token punctuation">(</span>fs<span class="token punctuation">.</span><span class="token function">existsSync</span><span class="token punctuation">(</span>folderPath<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword keyword-return">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword keyword-try">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword keyword-if">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>fs<span class="token punctuation">.</span><span class="token function">existsSync</span><span class="token punctuation">(</span><span class="token constant">CHROMIUM_PATH</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        fs<span class="token punctuation">.</span><span class="token function">mkdirSync</span><span class="token punctuation">(</span><span class="token constant">CHROMIUM_PATH</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword keyword-await">await</span> <span class="token function">downloadFile</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> zipPath<span class="token punctuation">,</span> progressCallback<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword keyword-await">await</span> <span class="token function">extractZip</span><span class="token punctuation">(</span>zipPath<span class="token punctuation">,</span> folderPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword keyword-catch">catch</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+</code></pre>
+              <div class="toolbar"></div>
+            </div>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              首先确定 zip
+              包的路径和解压到的目录的路径，如果目录已经存在了，那就不下载了。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              否则调用刚才实现的两个方法来下载 zip 和解压缩。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              chromium 下载还是比较慢的，我们给它加个进度条：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              也就是给 response 流的 data 事件加个回调，把从 content-length
+              拿到的数据的总大小，还有当前 chunk 的数据大小传过去：
+            </p>
+            <div class="code-toolbar">
+              <pre
+                style="
+                  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+                  font-size: 16px;
+                  position: relative;
+                  overflow: auto;
+                  line-height: 1.75;
+                  color: #333333;
+                  background: #f8f8f8;
+                "
+                class="language-javascript"
+                tabindex="0"
+              ><code class="hljs language-javascript" lang="javascript" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; border-radius: 2px; overflow-x: auto; background-position: initial; background-color: #f8f8f8; color: #333333; padding: 15px 12px; margin: 0px; display: block;"><span class="token keyword keyword-const">const</span> totalBytes <span class="token operator">=</span> <span class="token function">parseInt</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>headers<span class="token punctuation">[</span><span class="token string">'content-length'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-if">if</span> <span class="token punctuation">(</span>progressCallback<span class="token punctuation">)</span>
+    response<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'data'</span><span class="token punctuation">,</span> <span class="token function">onData</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword keyword-null">null</span><span class="token punctuation">,</span> totalBytes<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+<span class="token keyword keyword-function">function</span> <span class="token function">onData</span><span class="token punctuation">(</span><span class="token parameter">totalBytes<span class="token punctuation">,</span> chunk</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">progressCallback</span><span class="token punctuation">(</span>totalBytes<span class="token punctuation">,</span> chunk<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+              <div class="toolbar"></div>
+            </div>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              那用的时候就可以在这个回调里显示个进度条了：
+            </p>
+            <div class="code-toolbar">
+              <pre
+                style="
+                  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+                  font-size: 16px;
+                  position: relative;
+                  overflow: auto;
+                  line-height: 1.75;
+                  color: #333333;
+                  background: #f8f8f8;
+                "
+                class="language-javascript"
+                tabindex="0"
+              ><code class="hljs language-javascript" lang="javascript" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; border-radius: 2px; overflow-x: auto; background-position: initial; background-color: #f8f8f8; color: #333333; padding: 15px 12px; margin: 0px; display: block;"><span class="token keyword keyword-const">const</span> Downloader <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./lib/Downloader'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> revision <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./package'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>puppeteer<span class="token punctuation">.</span>chromium_revision<span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> ProgressBar <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'progress'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+Downloader<span class="token punctuation">.</span><span class="token function">downloadChromium</span><span class="token punctuation">(</span>revision<span class="token punctuation">,</span> onProgress<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span><span class="token parameter">error</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">'Download failed: '</span> <span class="token operator">+</span> error<span class="token punctuation">.</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword keyword-let">let</span> progressBar <span class="token operator">=</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-function">function</span> <span class="token function">onProgress</span><span class="token punctuation">(</span><span class="token parameter">bytesTotal<span class="token punctuation">,</span> delta</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword keyword-if">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>progressBar<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        progressBar <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">ProgressBar</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Downloading Chromium - </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token function">toMegabytes</span><span class="token punctuation">(</span>bytesTotal<span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> [:bar] :percent :etas </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">complete</span><span class="token operator">:</span> <span class="token string">'='</span><span class="token punctuation">,</span>
+            <span class="token literal-property property">incomplete</span><span class="token operator">:</span> <span class="token string">' '</span><span class="token punctuation">,</span>
+            <span class="token literal-property property">width</span><span class="token operator">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+            <span class="token literal-property property">total</span><span class="token operator">:</span> bytesTotal<span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    progressBar<span class="token punctuation">.</span><span class="token function">tick</span><span class="token punctuation">(</span>delta<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+              <div class="toolbar"></div>
+            </div>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              Downloader 就是我们刚刚实现的下载解压的逻辑，revision
+              是版本号，这个在 package.json 里配置。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              progress
+              是一个第三方的控制台进度条，传入宽度、总大小和显示的字符，每次调用
+              tick 更新下长度就可以了。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              我们来整体试一下：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <img
+                class="medium-zoom-image"
+                style="
+                  border-style: none;
+                  cursor: zoom-in;
+                  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) 0s !important;
+                  z-index: 10000;
+                  max-width: 100%;
+                  margin: 0px;
+                "
+                src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/688d0b5a38dd4012a9f40fdbffd6cc49~tplv-k3u1fbpfcp-zoom-in-crop-mark:3326:0:0:0.awebp"
+                alt=""
+                loading="lazy"
+              />
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              下载、解压、进度条都没问题，下载下来的 chromium 也能正常跑起来：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <img
+                class="medium-zoom-image"
+                style="
+                  border-style: none;
+                  cursor: zoom-in;
+                  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) 0s !important;
+                  z-index: 10000;
+                  max-width: 100%;
+                  margin: 0px;
+                "
+                src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/36c83adc086c4bfeb71d60f2c28fe719~tplv-k3u1fbpfcp-zoom-in-crop-mark:3326:0:0:0.awebp"
+                alt=""
+                loading="lazy"
+              />
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              至此，我们就实现了 chromium 的自动下载，只要在 package.json
+              里配一个版本号，就能自动下载。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              当然，现在还不算完全自动，还要手动执行 node install.js
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              可以把它配在 postinstall 的 npm scripts
+              里，安装完依赖之后触发下载：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              <img
+                class="medium-zoom-image"
+                style="
+                  border-style: none;
+                  cursor: zoom-in;
+                  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) 0s !important;
+                  z-index: 10000;
+                  max-width: 100%;
+                  margin: 0px;
+                "
+                src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0a1fa4db44024a92ba3cb3c6d04a8903~tplv-k3u1fbpfcp-zoom-in-crop-mark:3326:0:0:0.awebp"
+                alt=""
+                loading="lazy"
+              />
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              这一节的完整代码在<a
+                style="
+                  background-color: transparent;
+                  margin: initial;
+                  text-decoration-line: none;
+                  cursor: pointer;
+                  color: #0269c8;
+                  border-bottom: 1px solid #d1e9ff;
+                "
+                title="https://github.com/QuarkGluonPlasma/fe-debug-exercize"
+                href="https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2FQuarkGluonPlasma%2Ffe-debug-exercize"
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                >小册仓库</a
+              >里，大家可以下下来跑跑
+            </p>
+            <h2
+              style="
+                line-height: 32px;
+                margin-top: 35px;
+                margin-bottom: 10px;
+                padding-bottom: 12px;
+                font-size: 22px;
+                border-bottom: 1px solid #ececec;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                background-color: #ffffff;
+              "
+              data-id="heading-0"
+            >
+              总结
+            </h2>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              puppeteer 是一个基于 CDP
+              实现的网页自动化测试工具，可以用来跑测试用例，也可以用来做爬虫等。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              为了深入理解它的实现原理，我们会从 0 实现一个 mini puppeteer。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              这节我们实现了自动下载 chromium：
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              chromium 所有平台和版本的 zip 包都在 google 的一个网站上存着，通过
+              os 模块拿到系统信息，再根据传入的版本号就能确定 url。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              确定了 url 之后通过 https
+              模块就可以下载，通过流的方式写入本地文件，并且在每次有 data
+              的时候更新下进度条。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              最后通过第三方的 extract-zip 包实现了解压缩。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              并且把这个脚本配到了 postinstall 的 npm scripts
+              里，只要安装完依赖就会自动下载。
+            </p>
+            <p
+              style="
+                line-height: 32px;
+                margin-top: 22px;
+                margin-bottom: 22px;
+                color: #252933;
+                font-family: -apple-system, system-ui, 'Segoe UI', Roboto,
+                  Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'system-ui',
+                  'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+                  'Microsoft YaHei', Arial;
+                font-size: 16px;
+                background-color: #ffffff;
+              "
+            >
+              下载 Chromium 只是第一步，下一节我们把 Chromium
+              跑起来实现远程控制。
+            </p>
+          </div>
+        </article>
+        <div
+          class="text-13x flex items-center justify-between pl-30 pr-30 mt-40 mb-100"
+        >
+          <a
+            class="block hover:underline hover:text-blue-primary cursor-pointer pr-10 text-gray-333"
+            href="/read/6391c7644b2c4c07ddde0599.html?toggle=0"
+            ><span>上一篇：</span
+            ><span>编译 chrome devtools frontend 源码，然后用它来调试</span></a
+          ><a
+            class="block hover:underline hover:text-blue-primary cursor-pointer pl-10 text-gray-333"
+            href="/read/6391c7a44b2c4c07ddde05b4.html?toggle=0"
+            ><span>下一篇：</span><span>基于 CDP 实现 Puppeteer（下）</span></a
+          >
+        </div>
+        <div style="border: 1px solid transparent"></div>
+        <div
+          class="fixed right-50 bottom-50 border w-50x h-50x hidden lg:flex items-center justify-center cursor-pointer bg-white"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="block w-30x h-30x transform rotate-180"
+            viewBox="0 0 1024 1024"
+            color="#999"
+            fill="#999"
+          >
+            <defs><style></style></defs>
+            <path
+              d="M472.064 751.552L72.832 352.32c-22.08-22.08-22.08-57.792 0-79.872 22.016-22.016 57.792-22.08 79.872 0L512 631.744l359.296-359.296c22.016-22.016 57.792-22.08 79.872 0s22.016 57.792 0 79.872L551.936 751.552c-22.08 22.016-57.792 22.016-79.872 0z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+      <div
+        class="max-w-1100x fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-1024x flex items-center justify-between"
+      >
+        <a
+          class="bg-white rounded-full shadow w-60x h-60x flex items-center justify-center transform rotate-90 cursor-pointer select-none"
+          href="/read/6391c7644b2c4c07ddde0599.html?toggle=0"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="block w-30x h-30x"
+            viewBox="0 0 1024 1024"
+            color="#ccc"
+            fill="#ccc"
+          >
+            <defs><style></style></defs>
+            <path
+              d="M472.064 751.552L72.832 352.32c-22.08-22.08-22.08-57.792 0-79.872 22.016-22.016 57.792-22.08 79.872 0L512 631.744l359.296-359.296c22.016-22.016 57.792-22.08 79.872 0s22.016 57.792 0 79.872L551.936 751.552c-22.08 22.016-57.792 22.016-79.872 0z"
+            ></path></svg></a
+        ><a
+          class="bg-white rounded-full shadow w-60x h-60x flex items-center justify-center transform -rotate-90 cursor-pointer select-none"
+          href="/read/6391c7a44b2c4c07ddde05b4.html?toggle=0"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="block w-30x h-30x"
+            viewBox="0 0 1024 1024"
+            color="#ccc"
+            fill="#ccc"
+          >
+            <defs><style></style></defs>
+            <path
+              d="M472.064 751.552L72.832 352.32c-22.08-22.08-22.08-57.792 0-79.872 22.016-22.016 57.792-22.08 79.872 0L512 631.744l359.296-359.296c22.016-22.016 57.792-22.08 79.872 0s22.016 57.792 0 79.872L551.936 751.552c-22.08 22.016-57.792 22.016-79.872 0z"
+            ></path></svg
+        ></a>
+      </div>
+    </div>
+  </body>
+</html>
