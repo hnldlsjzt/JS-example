@@ -49,9 +49,9 @@ const task = function (id) {
     return async (ctx, next) => {
         try {
             console.log(`task ${id} begin`);
-            // ctx.count++;
+            ctx.count++;
             // await wait(100)
-            // console.log(`count: ${ctx.count}`);
+            console.log(`count: ${ctx.count}`);
             await next();
             console.log(`tark ${id} end`);
         } catch (error) {
