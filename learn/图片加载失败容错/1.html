@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      img.error {
+        position: relative;
+        display: inline-block;
+      }
+
+      img.error::before {
+        content: "";
+        /** 定位代码 **/
+        background: url(error-default.png);
+      }
+
+      img.error::after {
+        content: attr(alt);
+        /** 定位代码 **/
+      }
+    </style>
+  </head>
+
+  <body>
+    <img src="test.png" alt="Alt Info" onerror="this.classList.add('error');" />
+    <script>
+      void (function () {
+        function loadImg(src) {
+          return new Promise(function (resolve, reject) {
+            let img = new Image();
+            img.src = src;
+            img.onerror = function (err) {
+              reject(err);
+            };
+            img.onload = function (res) {
+              resolve(res);
+            };
+          });
+        }
+        let src1 =
+          "https://resources-public-test.myfuwu.com.cn/jqs/image/1615185896998/63AkbNaWa.png";
+        let src2 =
+          "https://resources-public-test.myfuwu.com.cn/jq/image/1615189313830/dWXc2KdM.jpg";
+        loadImg(src1).then(
+          function (res) {
+            console.log("res1", res);
+          },
+          function (err) {
+            console.log("err1", err);
+          }
+        );
+        loadImg(src2).then(
+          function (res) {
+            console.log("res2", res);
+          },
+          function (err) {
+            console.log("err2", err);
+          }
+        );
+      })();
+
+      void (function () {
+        function loadImg(src) {
+          let img = new Image();
+          img.src = src;
+          img.onerror = function (err) {};
+          img.onload = function (res) {};
+        }
+        let src1 =
+          "https://resources-public-test.myfuwu.com.cn/jqs/image/1615185896998/63AkbNaWa.png";
+        let src2 =
+          "https://resources-public-test.myfuwu.com.cn/jq/image/1615189313830/dWXc2KdM.jpg";
+        loadImg(src1).then(
+          function (res) {
+            console.log("res1", res);
+          },
+          function (err) {
+            console.log("err1", err);
+          }
+        );
+        loadImg(src2).then(
+          function (res) {
+            console.log("res2", res);
+          },
+          function (err) {
+            console.log("err2", err);
+          }
+        );
+      })();
+
+      void (function () {
+        /**
+                   * 图片的异常处理
+
+      当图片链接挂了，加载失败了，我们比较好的处理方式应该是怎么样呢？
+      处理的方式有很多种。在张鑫旭老师的这篇文章中 -- 图片加载失败后CSS样式处理最佳实践[29] 有一个不错的实践。
+      核心思路为：
+      利用图片加载失败，触发 <img> 元素的 onerror 事件，给加载失败的 <img> 元素新增一个样式类
+      利用新增的样式类，配合 <img> 元素的伪元素，在展示默认兜底图的同时，还能一起展示 <img> 元素的 alt 信息 */
+      })();
+    </script>
+  </body>
+</html>

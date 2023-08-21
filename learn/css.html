@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        width: 300px;
+      }
+
+      .container > span {
+        margin-right: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <span>Item 1</span>
+      <span>Item 2</span>
+      <span>Item 3</span>
+      <span>Item 4</span>
+      <span>Item 5</span>
+      <span>Item 6</span>
+      <span>Item 7</span>
+      <span>Item 8</span>
+      <span>Item 9</span>
+      <span>Item 91</span>
+      <span>Item 92</span>
+      <span>Item 93</span>
+      <span>Item 94</span>
+      <span>Item 95</span>
+      <span>Item 95</span>
+      <span>Item 95</span>
+      <span>Item 95</span>
+      <span>Item 95</span>
+      <span>Item 95</span>
+      <!-- 更多 span 元素 -->
+    </div>
+    <script>
+      const container = document.querySelector(".container");
+      const spans = container.querySelectorAll("span");
+      const containerWidth = container.offsetWidth;
+      const spanWidth = spans[0].offsetWidth + 10; // 假设每个 span 宽度相同，加上 margin-right 的宽度
+
+      const maxSpansPerRow = Math.floor(containerWidth / spanWidth);
+      const numRows = Math.ceil(spans.length / maxSpansPerRow);
+
+      const spanGroups = [];
+      for (let i = 0; i < numRows; i++) {
+        const start = i * maxSpansPerRow;
+        const end = start + maxSpansPerRow;
+        const group = Array.from(spans).slice(start, end);
+        spanGroups.push(group);
+      }
+
+      container.innerHTML = "";
+      spanGroups.forEach((group) => {
+        const row = document.createElement("div");
+        row.style.display = "flex";
+        row.style.width = "100%";
+        row.style.marginBottom = "10px";
+        group.forEach((span, index) => {
+          const clonedSpan = span.cloneNode(true);
+          if (index === group.length - 1) {
+            clonedSpan.style.textOverflow = "ellipsis";
+            clonedSpan.style.whiteSpace = "nowrap";
+            clonedSpan.style.overflow = "hidden";
+          }
+          row.appendChild(clonedSpan);
+        });
+        container.appendChild(row);
+      });
+    </script>
+  </body>
+</html>

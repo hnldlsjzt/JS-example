@@ -1,0 +1,116 @@
+<html>
+  <head>
+    <!-- include Vue 2.x -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@^2"></script>
+    <!-- include vue-treeselect & its styles. you can change the version tag to better suit your needs. -->
+    <script src="https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@0.4.0/dist/vue-treeselect.umd.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@0.4.0/dist/vue-treeselect.min.css"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <treeselect
+        :multiple="true"
+        :options="options"
+        :flattenSearchResults="false"
+        placeholder="Select your favourite(s)..."
+        v-model="value"
+      />
+    </div>
+  </body>
+  <script>
+    // register the component
+    Vue.component("treeselect", VueTreeselect.Treeselect);
+
+    new Vue({
+      el: "#app",
+      data: {
+        // define the default value
+        value: [],
+        // define options
+
+        options: [
+          {
+            id: 1,
+            level: 0,
+            label: "Item 1",
+            children: [
+              {
+                id: 2,
+                label: "Item 1.1",
+                children: [
+                  {
+                    id: 3,
+                    label: "Item 1.1.1",
+                  },
+                  {
+                    id: 4,
+                    label: "Item 1.1.2",
+                  },
+                ],
+              },
+              {
+                id: 5,
+                label: "Item 1.2",
+              },
+            ],
+          },
+          {
+            id: 6,
+            label: "Item 2",
+            children: [
+              {
+                id: 7,
+                label: "Item 2.1",
+                children: [
+                  {
+                    id: 8,
+                    label: "Item 2.1.1",
+                  },
+                  {
+                    id: 9,
+                    label: "Item 2.1.2",
+                  },
+                ],
+              },
+              {
+                id: 10,
+                label: "Item 2.2",
+              },
+            ],
+          },
+          {
+            id: 11,
+            label: "Item 2",
+            children: [
+              {
+                id: 12,
+                label: "Item 2.1",
+                children: [
+                  {
+                    id: 13,
+                    label: "Item 2.1.1",
+                  },
+                  {
+                    id: 14,
+                    label: "Item 2.1.2",
+                  },
+                ],
+              },
+              {
+                id: 15,
+                label: "Item 2.2",
+              },
+            ],
+          },
+          {
+            id: 16,
+            label: "最后一级",
+          },
+        ],
+      },
+    });
+  </script>
+</html>
