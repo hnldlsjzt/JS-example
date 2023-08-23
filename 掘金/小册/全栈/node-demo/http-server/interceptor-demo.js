@@ -1,7 +1,7 @@
 /**
  * 拦截器切面 demo
  */
-const Interceptor = require('./interceptor')
+// const Interceptor = require('./interceptor')
 // class Interceptor {
 //     constructor() {
 //         this.aspects = [] // 存储拦截位面
@@ -37,6 +37,26 @@ const Interceptor = require('./interceptor')
 //         return context
 //     }
 // }
+class Interceptor {
+    constructor() {
+        this.aspects = []
+    }
+    // 注册拦截切面
+    use(fn) {
+        this.aspects.push(fn)
+        return this
+    }
+    // 调用
+    run(context) {
+        const proc = this.aspects.reduceRight((a, b) => {
+            return async () => {
+                await b(context, a)
+            }
+        }, () => Promise.resolve())
+        console.log(proc());
+        proc()
+    }
+}
 function wait(ms) {
     return new Promise((resolve) => {
         setTimeout(resolve, ms)

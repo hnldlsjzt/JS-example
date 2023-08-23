@@ -1,0 +1,2 @@
+使用stream写数据 
+end

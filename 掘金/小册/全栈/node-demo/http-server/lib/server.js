@@ -3,6 +3,8 @@
  */
 const http = require('http')
 const Interceptor = require('./interceptor')
+const { log } = require('console')
+const { type } = require('os')
 module.exports = class {
     constructor() {
         const interceptor = new Interceptor()
@@ -16,9 +18,12 @@ module.exports = class {
                 if (body.pipe) {
                     body.pipe(res)
                 } else {
-                    if (typeof body !== 'string' && req.headers['Content-Type'] === 'application/json') {
+                    console.log('body11', body, req.headers, res.getHeader('Content-Type'));
+                    if (typeof body !== 'string' && res.getHeader('Content-Type') === 'application/json') {
                         body = JSON.stringify(body)
                     }
+
+                    console.log('typeof', typeof body);
                     res.end(body)
                 }
             }
