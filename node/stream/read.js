@@ -1,6 +1,8 @@
 const fs = require('fs')
 
-const rs = fs.createReadStream('./sample.txt',)
+const rs = fs.createReadStream('./sample.txt', {
+
+})
 
 rs.on('data', function (chunk) {
     // t

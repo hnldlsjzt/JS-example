@@ -29,6 +29,7 @@
 //              * porc 的形态
 //              * task0(ctx,task1(ctx,task2(ctx,task3(ctx,task4(ctx,Promise.resolve())))))
 //              * 最终 Promise.resolve() 微任务结尾。看成栈，先进后出
+//              * 先执行 task0 ，接着 next()。虽然最新有结果的是 task4，但是可以在 next 前后做一些事情，来达到提前执行的效果
 //              */
 //             await porc()
 //         } catch (error) {
@@ -48,13 +49,14 @@ class Interceptor {
     }
     // 调用
     run(context) {
-        const proc = this.aspects.reduceRight((a, b) => {
+        // 其实就是函数式编程的 compose
+        const proc = this.aspects.reduceRight((input, func) => {
             return async () => {
-                await b(context, a)
+                await func(context, input)
             }
         }, () => Promise.resolve())
-        console.log(proc());
-        proc()
+        console.log(proc, proc());
+        // proc()
     }
 }
 function wait(ms) {

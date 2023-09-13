@@ -28,7 +28,17 @@ void function () {
     const result = [1, 2, 3].reduce(add1andpush, [])
     console.log('result: ', result);
 }()
+function add4(num) {
+    return num + 4
+}
 
+function mutiply3(num) {
+    return num * 3
+}
+
+function divide2(num) {
+    return num / 2
+}
 /**
  * 理解声明式数据流：从链式调用到“回调地狱”
  */
@@ -139,17 +149,7 @@ void function () {
      */
 
     void function () {
-        function add4(num) {
-            return num + 4
-        }
 
-        function mutiply3(num) {
-            return num * 3
-        }
-
-        function divide2(num) {
-            return num / 2
-        }
 
         // 使用展开符来获取数组格式的 pipe 参数,这样入参就不用手动声明 [xxx]
         // function pipe(...funcs) {
@@ -166,7 +166,7 @@ void function () {
                 return fun(input)
             }
             return function (params) {
-               return funcs.reduce(callback, params)
+                return funcs.reduce(callback, params)
             }
         }
         // 执行顺序是从前往后
@@ -184,6 +184,21 @@ void function () {
         const compute2 = compose(divide2, mutiply3, add4)
         console.log('compute: ', compute2(10), compute(10));
 
+    }()
+
+    void function () {
+        function pipe(...funs) {
+            function callback(input, fun) {
+                // 把上一个输出的值，传如函数
+                return fun(input)
+            }
+            // 高阶函数
+            return function (initial) {
+                return funs.reduce(callback, initial)
+            }
+        }
+        const compute = pipe(add4, mutiply3, divide2)
+        console.log('compute-2023年08月24日11:25:07: ', compute(10));
     }()
 
 }()
