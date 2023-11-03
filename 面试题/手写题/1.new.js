@@ -96,3 +96,45 @@ void (function () {
   console.log("person", person);
   person.sayYouName();
 })();
+
+
+void function () {
+  function Foo() {
+    // 覆盖外部的 getName
+    getName = function () { alert(1); }
+    // 这里的 this 指向 window
+    return this;
+  }
+  Foo.getName = function () { alert(2); }
+  Foo.prototype.getName = function () { alert(3); }
+  var getName = function () { alert(4); }
+  function getName() { alert(5); }
+
+
+  Foo.getName(); //2
+  getName(); //4
+  Foo().getName(); //1
+  getName(); // 1
+  new Foo.getName();//2
+  new Foo().getName(); //3
+  console.log(new new Foo().getName()); //3
+
+  /**
+   * 
+   * 
+   *  
+   * 
+   * 
+   关于上述 new Foo.getName()先执行 Foo.getName()，而6中 new Foo().getName() 先执行 new Foo()，是因为：
+
+  new Foo() 属于new（带参数列表）
+  new Foo属于new（无参数列表）
+  无参数列表的优先级为18，而成员访问的优先级为19，高于无参数列表。因此new Foo.getName()先执行Foo.getName()
+
+  带参数列表的优先级为19，而成员访问的优先级也为19，按照运算符规则（同一优先级，按照从左向右的执行顺序），new Foo().getName()先执行new Foo()，再对new之后的实例进行成员访问.getName()操作。
+  这是js运算符的优先级链接，可查看每个运算符的优先级
+   */
+
+}()
+
+

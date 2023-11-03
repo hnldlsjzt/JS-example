@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://www.unpkg.com/axios@1.3.5/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <img id="img" src="" alt="" />
+    <script>
+      void function () {
+        axios
+          .get("http://localhost:3000/range-download", {
+            headers: {
+              // 中文和英文占用的字节不同。服务端支持 Range 时，会返回 206
+              Range: "bytes=0-4",
+              // 支持的时候，响应头会返回
+              // Content-Length: 5 // 当前长度
+              // Content-Range:bytes 0-4/31（31是总长度）
+              // Content-Type: text/plain; charset=UTF-8
+            },
+          })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+        axios
+          .get("http://localhost:3000/range-download", {
+            headers: {
+              // 获取 5 个字节后的所有长度
+              // 如果范围起点超出了总长度，则返回 416 状态码，代表 range 不合法。
+              // 如果起点在范围内，但终点超出总长度，则返回 206 状态码
+              // Range: "bytes=5-",
+              // 设置多段时，多增加 Range 请求头，express 默认不支持
+              Range: "bytes=5-190000000",
+            },
+            responseType: "arraybuffer",
+          })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      };
+      void function () {
+        const p1 = new Promise((resolve, reject) => {
+          axios
+            .get("http://localhost:3000/image-download", {
+              headers: {
+                Range: "bytes=0-30000",
+              },
+              responseType: "arraybuffer",
+            })
+            .then((res) => {
+              // console.log(res.data);
+              resolve(res.data);
+            })
+            .catch((err) => {
+              console.log(err);
+              reject(err);
+            });
+        });
+        const p2 = new Promise((resolve, reject) => {
+          axios
+            .get("http://localhost:3000/image-download", {
+              headers: {
+                Range: "bytes=30001-",
+              },
+              responseType: "arraybuffer",
+            })
+            .then((res) => {
+              // console.log(res.data);
+              resolve(res.data);
+            })
+            .catch((err) => {
+              console.log(err);
+              reject(err);
+            });
+        });
+        //这些返回的都是二进制数据，现在用 ArrayBuffer 转一下
+        // Promise.all([p1, p2]).then((res) => {
+        //   const [buff1, buff2] = res;
+        //   console.log("buff", buff1, buff2);
+        //   const blob = new Blob([buff1, buff2]);
+        //   console.log("blob: ", blob);
+        //   const img = document.querySelector("#img");
+        //   // createObjectURL哪怕传的内容相同。但每次生成的URL还是不同的
+        //   const src = URL.createObjectURL(blob);
+        //   const src1 = URL.createObjectURL(blob);
+        //   console.log("src: ", src, src1);
+        //   img.src = src;
+        // });
+      };
+
+      async function downloadFile(path, size, chunkSize) {
+        let chunkNum = Math.ceil(size / chunkSize);
+        const downloadTask = [];
+        for (let i = 0; i < chunkNum; i++) {
+          // 优化前
+          // // 最开始为 0
+          // const rangeStart = chunkSize * (i - 1);
+          // // 最后一个为 size
+          // const rangeEnd = chunkSize * i - 1;
+          // 当结束范围大于总长度时，可以给空或最大尺寸-1。虽然超出了也不会报错
+          // const Range = `bytes=${rangeStart}-${
+          //   rangeEnd >= size ? "" : rangeEnd
+          // }`;
+          // 优化后
+          // 最开始为 0
+          const rangeStart = chunkSize * i;
+          // 最后一个为 size
+          const rangeEnd = Math.min(rangeStart + chunkSize - 1, size - 1);
+          const Range = `bytes=${rangeStart}-${rangeEnd}`;
+          console.log("rangeEnd: ", rangeEnd, chunkNum, Range);
+          downloadTask.push(
+            axios.get(path, {
+              headers: {
+                Range,
+              },
+              // 这里是告诉浏览器把响应数据尝试解析成 blob，在 HTTP 的请求头的 accept 还是 application/json, text/plain, */*
+              responseType: "blob",
+            })
+          );
+        }
+        // 优化前
+        // 这里为什么要返回 then。不然拿到的数据会是整个axios响应，而不是res.data
+        // const buffs = await Promise.all(
+        //   downloadTask.map((p) => p.then((res) => res.data))
+        // );
+        // 优化后 -- 更高的可读性
+        const response = await Promise.all(downloadTask);
+        const buffs = response.map((res) => res.data);
+        console.log("buffs: ", buffs, downloadTask);
+        return new Blob(buffs);
+      }
+
+      (async () => {
+        const { data: len } = await axios.get(
+          "http://localhost:3000/file-size"
+        );
+
+        console.log("len: ", len);
+        const blob = await downloadFile(
+          "http://localhost:3000/image-download",
+          len,
+          30000
+        );
+        // const [buff1, buff2] = await Promise.all([p1, p2]);
+        // console.log("buff", buff1, buff2);
+        // const blob = new Blob([buff1, buff2]);
+        console.log("blob: ", blob);
+        const img = document.querySelector("#img");
+        // createObjectURL哪怕传的内容相同。但每次生成的URL还是不同的
+        const src = URL.createObjectURL(blob);
+        // const src1 = URL.createObjectURL(blob);
+        img.src = src;
+      })();
+    </script>
+  </body>
+</html>
