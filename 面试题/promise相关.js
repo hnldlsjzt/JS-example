@@ -51,3 +51,30 @@ void (function () {
   console.log(p1);
   console.log(p1);
 })();
+
+
+void (function () {
+
+  // 注意，如果作为参数的 Promise 实例，自己定义了 catch 方法，那么它一旦被 rejected ，并不会触发 Promise.all() 的 catch 方法
+
+  const p1 = new Promise((resolve, reject) => {
+    resolve('hello');
+  })
+    .then(result => result)
+    .catch(e => {
+      console.log('我有catch1', e);
+    });
+  const p2 = new Promise((resolve, reject) => {
+    throw new Error(' ');
+  })
+    .then(result => result)
+    .catch(e => {
+      console.log('我有catch2', e);
+    });
+  Promise.all([p1, p2])
+    .then(result => console.log(result))
+    .catch(e => {
+      console.log('Promise.all的catch', e)
+    });
+  // ["hello", Error: ]
+})()
